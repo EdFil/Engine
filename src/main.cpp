@@ -1,6 +1,6 @@
 #include "Engine.hpp"
 
-int main(int argc, char* argv[])
+int main()
 {
     Engine* engine = new Engine();
     if(engine->initialize()) {

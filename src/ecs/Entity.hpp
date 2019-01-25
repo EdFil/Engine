@@ -4,7 +4,7 @@
 
 enum class ComponentType;
 enum class State;
-class Component;
+struct Component;
 class EntitySystem;
 
 class Entity {

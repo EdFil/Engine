@@ -1,12 +1,10 @@
 project(Engine)
 cmake_minimum_required(VERSION 2.8.12)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -ansi -pedantic")
-
 # Configure CMake
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-set (CMAKE_CXX_STANDARD 11)
+set (CMAKE_CXX_STANDARD 14)
 
 # CXX Flags
 if(MSVC)
@@ -15,7 +13,7 @@ if(MSVC)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zi /MTd")
 	endif()
 else()
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -ansi -pedantic")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic")
 endif()
 
 # Variable definitions
@@ -31,9 +29,9 @@ set(SDL_INCLUDE_DIRS "${SDL2_BINARY_DIR}/include" "${SDL2_SOURCE_DIR}/include")
 set(SDL_LIBS SDL2 SDL2main)
 
 # GLM Dependency
+add_definitions(-DGLM_FORCE_SILENT_WARNINGS)
 set(GLM_TEST_ENABLE OFF CACHE BOOL "Build unit tests")
 add_subdirectory("${DEPENDENCIES_DIR}/glm")
-set(glm_INCLUDE_DIRS "${DEPENDENCIES_DIR}/glm")
 set(glm_LIBS glm)
 
 # Code Generation

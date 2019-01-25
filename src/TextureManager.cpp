@@ -11,7 +11,7 @@ TextureManager::TextureManager(Engine* engine) : _engine(engine) {
 	SDL_assert(_engine != nullptr);
 }
 
-SDL_Texture* TextureManager::loadTexture(const TextureID textureID) {
+SDL_Texture* TextureManager::loadTexture(const TextureID) {
     // // If texture already cached
     // const auto& it = _cachedTextures.find(textureID);
     // if(it != _cachedTextures.cend()) {
@@ -40,7 +40,7 @@ SDL_Texture* TextureManager::loadTexture(const TextureID textureID) {
 	return nullptr;
 }
 
-SDL_Texture* TextureManager::loadText(const char* text, const char* fontName, unsigned fontSize, const SDL_Color& color) {
+SDL_Texture* TextureManager::loadText(const char*, const char*, unsigned, const SDL_Color&) {
 	// std::string fullPath = std::string(RESOURCES_DIR) + fontName;
 
 	// TTF_Font* font = nullptr;
