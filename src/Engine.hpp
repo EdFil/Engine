@@ -14,41 +14,41 @@ class TextureManager;
 
 class Engine : public ApplicationEventDelegate {
 public:
-	Engine();
+    Engine();
 
-	bool initialize();
-	void cleanup();
-	void run();
-	void setScene(std::unique_ptr<Scene>&& scene);
+    bool initialize();
+    void cleanup();
+    void run();
+    void setScene(std::unique_ptr<Scene>&& scene);
 
-	EntitySystem* entitySystem() { return &_entitySystem; }
+    EntitySystem* entitySystem() { return &_entitySystem; }
     TransformSystem* transformSystem() { return &_transformSystem; }
     RenderSystem* renderSystem() { return &_renderSystem; }
     TextureManager* textureManager() { return _textureManager.get(); }
     EventDispatcher* eventDispatcher() { return _eventDispatcher.get(); }
-	TextSystem* textSystem() { return &_textSystem; }
-	
+    TextSystem* textSystem() { return &_textSystem; }
 
-	void onQuit() override;
 
-	SDL_Renderer* renderer() const { return _renderer; }
+    void onQuit() override;
 
-private:
-	void mainLoop();
+    SDL_Renderer* renderer() const { return _renderer; }
 
 private:
-	EntitySystem _entitySystem;
-	TransformSystem _transformSystem;
-	RenderSystem _renderSystem;
-	TextSystem _textSystem;
-	unsigned _lastGetTicksTime = 0;
+    void mainLoop();
 
-	SDL_Window* _window = nullptr;
-	SDL_Renderer* _renderer = nullptr;
+private:
+    EntitySystem _entitySystem;
+    TransformSystem _transformSystem;
+    RenderSystem _renderSystem;
+    TextSystem _textSystem;
+    unsigned _lastGetTicksTime = 0;
 
-	std::unique_ptr<Scene> _runningScene;
-	std::unique_ptr<TextureManager> _textureManager;
-	std::unique_ptr<EventDispatcher> _eventDispatcher;
-	
-	bool _isRunning = false;
+    SDL_Window* _window = nullptr;
+    SDL_Renderer* _renderer = nullptr;
+
+    std::unique_ptr<Scene> _runningScene;
+    std::unique_ptr<TextureManager> _textureManager;
+    std::unique_ptr<EventDispatcher> _eventDispatcher;
+
+    bool _isRunning = false;
 };

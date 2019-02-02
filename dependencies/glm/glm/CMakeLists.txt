@@ -52,11 +52,12 @@ add_library(glm_static STATIC ${ROOT_TEXT} ${ROOT_MD} ${ROOT_NAT}
 	${GTX_SOURCE}     ${GTX_INLINE}     ${GTX_HEADER}
 	${SIMD_SOURCE}    ${SIMD_INLINE}    ${SIMD_HEADER})
 
-add_library(glm_shared SHARED ${ROOT_TEXT} ${ROOT_MD} ${ROOT_NAT}
-	${ROOT_SOURCE}    ${ROOT_INLINE}    ${ROOT_HEADER}
-	${CORE_SOURCE}    ${CORE_INLINE}    ${CORE_HEADER}
-	${EXT_SOURCE}     ${EXT_INLINE}     ${EXT_HEADER}
-	${GTC_SOURCE}     ${GTC_INLINE}     ${GTC_HEADER}
-	${GTX_SOURCE}     ${GTX_INLINE}     ${GTX_HEADER}
-	${SIMD_SOURCE}    ${SIMD_INLINE}    ${SIMD_HEADER})
+# Edgar - We don't need to make the shared lib
+#add_library(glm_shared SHARED ${ROOT_TEXT} ${ROOT_MD} ${ROOT_NAT}
+#	${ROOT_SOURCE}    ${ROOT_INLINE}    ${ROOT_HEADER}
+#	${CORE_SOURCE}    ${CORE_INLINE}    ${CORE_HEADER}
+#	${EXT_SOURCE}     ${EXT_INLINE}     ${EXT_HEADER}
+#	${GTC_SOURCE}     ${GTC_INLINE}     ${GTC_HEADER}
+#	${GTX_SOURCE}     ${GTX_INLINE}     ${GTX_HEADER}
+#	${SIMD_SOURCE}    ${SIMD_INLINE}    ${SIMD_HEADER})
 

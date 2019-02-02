@@ -4,7 +4,6 @@
 #include <ctime>
 
 #include <SDL.h>
-#include <SDL_log.h>
 
 #include "TextureManager.hpp"
 #include "Scene.hpp"
@@ -98,6 +97,12 @@ void Engine::mainLoop() {
 		// Render Scene
 		SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
 		SDL_RenderClear(_renderer);
+
+		int w, h;
+		SDL_GetWindowSize(_window, &w, &h);
+
+		SDL_SetRenderDrawColor(_renderer, 255, 0, 0, 255);
+		SDL_RenderDrawLine(_renderer, 0, 0, w, h);
 
         _renderSystem.draw(_renderer);
 

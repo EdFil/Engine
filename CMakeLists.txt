@@ -2,9 +2,15 @@ project(Engine)
 cmake_minimum_required(VERSION 2.8.12)
 
 # Configure CMake
-set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-set (CMAKE_CXX_STANDARD 14)
+set (CMAKE_CXX_STANDARD 17)
+
+message(STATUS CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE})
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    add_definitions(-DRELEASE)
+else()
+    add_definitions(-DDEBUG)
+endif()
+
 
 # CXX Flags
 if(MSVC)
@@ -13,7 +19,7 @@ if(MSVC)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zi /MTd")
 	endif()
 else()
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -O0 -g")
 endif()
 
 # Variable definitions
@@ -34,6 +40,17 @@ set(GLM_TEST_ENABLE OFF CACHE BOOL "Build unit tests")
 add_subdirectory("${DEPENDENCIES_DIR}/glm")
 set(glm_LIBS glm)
 
+# stb Dependency
+add_subdirectory("${DEPENDENCIES_DIR}/stb")
+set(stb_LIBS stb_static)
+
+if(NOT RESOURCES_DIR)
+	message(WARNING "RESOURCES_DIR not set")
+elseif(NOT IS_DIRECTORY ${RESOURCES_DIR})
+	message(WARNING "${RESOURCES_DIR} is not a directory")
+endif()
+message(STATUS "ENGINE - RESOURCES_DIR = ${RESOURCES_DIR}")
+
 # Code Generation
 file(GLOB_RECURSE ENGINE_IN_FILES "${SOURCE_DIR}/*.in")
 foreach(IN_FILE IN ITEMS ${ENGINE_IN_FILES})
@@ -48,8 +65,7 @@ file(GLOB_RECURSE SOURCES
     "${SOURCE_DIR}/*.hpp" "${SOURCE_DIR}/*.h")
 
 # Make library
-#add_library(Engine_Static SHARED ${SOURCES})
-add_executable(Engine_Static ${SOURCES})
+add_library(Engine_Static STATIC ${SOURCES} src/file/FileManager.cpp src/file/FileManager.hpp)
 
 # Include directotories
 target_include_directories(Engine_Static 
@@ -59,7 +75,7 @@ target_include_directories(Engine_Static
 )
 
 # Link dependencies
-target_link_libraries(Engine_Static PUBLIC ${SDL_LIBS} ${glm_LIBS})
+target_link_libraries(Engine_Static PUBLIC ${SDL_LIBS} ${glm_LIBS} ${stb_LIBS})
 
 # Source group generation for IDEs
 foreach(SOURCE IN ITEMS ${SOURCES})
