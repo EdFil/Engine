@@ -10,10 +10,11 @@ file(GLOB_RECURSE SOURCES
         "${SOURCE_DIR}/*.hpp" "${SOURCE_DIR}/*.h")
 
 # Make library
-add_library(stb_static STATIC ${SOURCES})
+add_library(stb_static INTERFACE)
+target_sources(stb_static INTERFACE ${SOURCES})
 
 # Include directotories
-target_include_directories(stb_static PUBLIC ${SOURCE_DIR})
+target_include_directories(stb_static INTERFACE ${SOURCE_DIR})
 
 
 
