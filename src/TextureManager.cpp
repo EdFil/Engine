@@ -1,120 +1,65 @@
 #include "TextureManager.hpp"
 
-#include <SDL.h>
+#include <SDL_render.h>
+#include <SDL_log.h>
+#include <stb_image.h>
 
-#include "Engine.hpp"
-#include "Constants.hpp"
+#include "file/FileManager.hpp"
 
-const char TextureManager::k_defaultFontName[] = "OpenSans-Bold.ttf";
+SDL_Texture* TextureManager::loadTexture(const std::string& textureFileName) {
+     // If texture already cached
+     const auto& it = _cachedTextures.find(textureFileName);
+     if(it != _cachedTextures.cend()) {
+         return it->second;
+     }
 
-TextureManager::TextureManager(Engine* engine) : _engine(engine) {
-	SDL_assert(_engine != nullptr);
-}
+     // Try to load the image into ram
+	 std::string imageFullPath = FileManager::instance()->fullPathForFile(textureFileName.c_str());
+	 int width, height, channelsInFile;
+	 stbi_uc* imageData = stbi_load(imageFullPath.c_str(), &width, &height, &channelsInFile, STBI_rgb_alpha);
+	 if (imageData == nullptr) {
+		 SDL_LogError(SDL_LOG_CATEGORY_RENDER, "[TextureManager] Error loading image %s", imageFullPath.c_str());
+		 return nullptr;
+	 }
 
-SDL_Texture* TextureManager::loadTexture(const TextureID) {
-    // // If texture already cached
-    // const auto& it = _cachedTextures.find(textureID);
-    // if(it != _cachedTextures.cend()) {
-    //     return it->second;
-    // }
+	 // Set up the pixel format color masks for RGB(A) byte arrays.
+	 // Only STBI_rgb (3) and STBI_rgb_alpha (4) are supported here!
+	uint32_t rmask, gmask, bmask, amask;
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+	int shift = (req_format == STBI_rgb) ? 8 : 0;
+	rmask = 0xff000000 >> shift;
+	gmask = 0x00ff0000 >> shift;
+	bmask = 0x0000ff00 >> shift;
+	amask = 0x000000ff >> shift;
+#else // little endian, like x86
+	rmask = 0x000000ff;
+	gmask = 0x0000ff00;
+	bmask = 0x00ff0000;
+	amask = (channelsInFile == STBI_rgb) ? 0 : 0xff000000;
+#endif
 
-    // // Try to load the image into ram
-	// const std::string fullPath = fullPathForTextureID(textureID);
-    // SDL_Surface* loadedSurface = IMG_Load(fullPath.c_str());
-    // if(loadedSurface == nullptr) {
-    //     SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Unable to load image %s! SDL_image Error: %s\n", fullPath.c_str(), IMG_GetError());
-    //     return nullptr;
-    // }
-
-    // // Try to create and cache the texture
-    // SDL_Texture* texture = SDL_CreateTextureFromSurface(_engine->renderer(), loadedSurface);
-    // if(texture != nullptr) {
-    //     _cachedTextures[textureID] = texture;
-    //     SDL_LogInfo(SDL_LOG_CATEGORY_RENDER, "Created new texture! %s!", fullPath.c_str());
-    // } else {
-    //     SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Unable to create texture from %s! SDL Error: %s\n", fullPath.c_str(), SDL_GetError());
-    // }
-    // SDL_FreeSurface(loadedSurface);
-
-    // return texture;
-	return nullptr;
-}
-
-SDL_Texture* TextureManager::loadText(const char*, const char*, unsigned, const SDL_Color&) {
-	// std::string fullPath = std::string(RESOURCES_DIR) + fontName;
-
-	// TTF_Font* font = nullptr;
-	// // TODO: Cache fonts
-	// //const auto it = _cachedFonts.find({ std::string(fontName), fontSize });
-	// //if (it != _cachedFonts.cend()) {
-	// //	font = it->second;
-	// //}
-
-	// if (font == nullptr) {
-	// 	font = TTF_OpenFont(fullPath.c_str(), fontSize);
-	// 	if (font == nullptr) {
-	// 		SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Could not open font. SDL Error: %s", TTF_GetError());
-	// 		return nullptr;
-	// 	}
-	// }
-	
-	// SDL_Surface* surfaceText = TTF_RenderText_Solid(font, text, color);
-	// if(surfaceText == nullptr) {
-	// 	SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Could not generate surface for text. SDL Error: %s", TTF_GetError());
-	// 	return nullptr;
-	// }
-
-
-	// SDL_Texture* textTexture = SDL_CreateTextureFromSurface(_engine->renderer(), surfaceText);
-	// SDL_FreeSurface(surfaceText);
-	// TTF_CloseFont(font);
-
-	// return textTexture;
-	return nullptr;
-}
-
-void TextureManager::deleteTexture(SDL_Texture* texture) {
-	SDL_DestroyTexture(texture);
-
-	for (auto it = _cachedTextures.begin(); it != _cachedTextures.end(); ++it) {
-		if(it->second == texture) {
-			_cachedTextures.erase(it);
-			break;
-		}
-
+	// Setup channels
+	int depth, pitch;
+	if (channelsInFile == STBI_rgb) {
+		depth = 24;
+		pitch = 3 * width; // 3 bytes per pixel * pixels per row
+	} else { // STBI_rgb_alpha (RGBA)
+		depth = 32;
+		pitch = 4 * width;
 	}
-}
 
-void TextureManager::preloadAllTextures() {
-	for(int i = static_cast<int>(TextureID::Background); i < static_cast<int>(TextureID::COUNT); i++) {
-		loadTexture(static_cast<TextureID>(i));
+	SDL_Surface* surface = SDL_CreateRGBSurfaceFrom(static_cast<void*>(imageData), width, height, depth, pitch, rmask, gmask, bmask, amask);
+	stbi_image_free(imageData);
+	if (surface == nullptr) {
+		SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Error creating surface for image %s with error %d", SDL_GetError());
+		return nullptr;
+	 }
+
+	SDL_Texture* texture = SDL_CreateTextureFromSurface(_renderer, surface);
+	SDL_FreeSurface(surface);
+	if (texture == nullptr) {
+		SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Error creating texture for image %s with error %d", SDL_GetError());
 	}
-}
 
-SDL_Texture* TextureManager::getRandomGemTexture() {
-	return loadTexture(static_cast<TextureID>(1 + rand() % (static_cast<int>(TextureID::COUNT) - 1)));
-}
-
-std::string TextureManager::fullPathForTextureID(TextureID textureID) const {
-    std::string basePath("/");
-
-    switch(textureID) {
-        case TextureID::Background:
-            return basePath + "Background.png";
-        case TextureID::Blue:
-            return basePath + "Blue.png";
-        case TextureID::Green:
-            return basePath + "Green.png";
-        case TextureID::Purple:
-            return basePath + "Purple.png";
-        case TextureID::Red:
-            return basePath + "Red.png";
-        case TextureID::Yellow:
-            return basePath + "Yellow.png";
-		case TextureID::Cross:
-			return basePath + "Cross.png";
-        default:
-            SDL_assert(false); // Unknown TextureID
-            return "";
-    }
+	return texture;
 }

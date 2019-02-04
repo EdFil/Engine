@@ -14,18 +14,18 @@ int main()
 
     FileManager::initialize();
 
-	std::string fullPath = FileManager::instance()->fullPathForFile("ImageTest.png");
-	std::vector<char> data = FileManager::instance()->loadFile("ImageTest.png");
+	//std::string fullPath = FileManager::instance()->fullPathForFile("ImageTest.png");
+	//std::vector<char> data = FileManager::instance()->loadFile("ImageTest.png");
 
     //int x, y, channels_in_file;
     //stbi_uc* result = stbi_load(fullPath.c_str(), &x, &y, &channels_in_file, 4);
     //stbi_image_free(result);
 
 
-    //Engine* engine = new Engine();
-    //if(engine->initialize()) {
-    //    engine->run();
-    //}
+    Engine* engine = new Engine();
+    if(engine->initialize()) {
+        engine->run();
+    }
 
     return 0;
 }

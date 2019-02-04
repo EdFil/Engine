@@ -8,6 +8,8 @@
 #include "TextureManager.hpp"
 #include "Scene.hpp"
 
+SDL_Texture* g_texture;
+
 Engine::Engine() { /* This need to be here because of the std::unique_ptr forward declarations */ }
 
 bool Engine::initialize() {
@@ -38,7 +40,7 @@ bool Engine::initialize() {
 		return false;
 	}
 
-	_textureManager = std::make_unique<TextureManager>(this);
+	_textureManager = std::make_unique<TextureManager>();
     _eventDispatcher = std::make_unique<EventDispatcher>();
 
 	_transformSystem.initialize();
@@ -46,8 +48,10 @@ bool Engine::initialize() {
     _eventDispatcher->initialize();
 	_textSystem.initialize(this);
 
-	_textureManager->preloadAllTextures();
+	_textureManager->setRenderer(_renderer);
     _eventDispatcher->registerForApplicationEvents(this);
+
+	g_texture = _textureManager->loadTexture("ImageTest.png");
 
 	return true;
 }
@@ -104,6 +108,11 @@ void Engine::mainLoop() {
 		SDL_SetRenderDrawColor(_renderer, 255, 0, 0, 255);
 		SDL_RenderDrawLine(_renderer, 0, 0, w, h);
 
+		SDL_Rect rect{ 0, 0, 200, 200 };
+		if(g_texture != nullptr) {
+			SDL_RenderCopy(_renderer, g_texture, nullptr, &rect);
+		}
+		
         _renderSystem.draw(_renderer);
 
 		SDL_RenderPresent(_renderer);

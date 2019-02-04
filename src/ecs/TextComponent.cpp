@@ -19,13 +19,13 @@ void TextComponent::release() {
 }
 
 void TextComponent::setText(const std::string& text, const std::string& fontName, const unsigned fontSize, const SDL_Color& color) {
-	if(_string != text) {
-		_renderComponent->deleteTexture();
+	//if(_string != text) {
+	//	_renderComponent->deleteTexture();
 
-		if(!text.empty()) {
-			_string = text;
-			SDL_Texture* texture = _system->engine()->textureManager()->loadText(text.c_str(), fontName.c_str(), fontSize, color);
-			_renderComponent->setTexture(texture);
-		}
-	}
+	//	if(!text.empty()) {
+	//		_string = text;
+	//		SDL_Texture* texture = _system->engine()->textureManager()->loadText(text.c_str(), fontName.c_str(), fontSize, color);
+	//		_renderComponent->setTexture(texture);
+	//	}
+	//}
 }
