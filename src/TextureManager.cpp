@@ -16,7 +16,8 @@ SDL_Texture* TextureManager::loadTexture(const std::string& textureFileName) {
      // Try to load the image into ram
 	 std::string imageFullPath = FileManager::instance()->fullPathForFile(textureFileName.c_str());
 	 int width, height, channelsInFile;
-	 stbi_uc* imageData = stbi_load(imageFullPath.c_str(), &width, &height, &channelsInFile, STBI_rgb_alpha);
+  
+	 stbi_uc* imageData = stbi_load(imageFullPath.c_str(), &width, &height, &channelsInFile, STBI_default);
 	 if (imageData == nullptr) {
 		 SDL_LogError(SDL_LOG_CATEGORY_RENDER, "[TextureManager] Error loading image %s", imageFullPath.c_str());
 		 return nullptr;
@@ -49,16 +50,17 @@ SDL_Texture* TextureManager::loadTexture(const std::string& textureFileName) {
 	}
 
 	SDL_Surface* surface = SDL_CreateRGBSurfaceFrom(static_cast<void*>(imageData), width, height, depth, pitch, rmask, gmask, bmask, amask);
-	stbi_image_free(imageData);
 	if (surface == nullptr) {
-		SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Error creating surface for image %s with error %d", SDL_GetError());
+		SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Error creating surface for image %s with error %s", imageFullPath.c_str(), SDL_GetError());
+        stbi_image_free(imageData);
 		return nullptr;
 	 }
 
 	SDL_Texture* texture = SDL_CreateTextureFromSurface(_renderer, surface);
 	SDL_FreeSurface(surface);
+    stbi_image_free(imageData);
 	if (texture == nullptr) {
-		SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Error creating texture for image %s with error %d", SDL_GetError());
+		SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Error creating texture for image %s with error %s", imageFullPath.c_str(), SDL_GetError());
 	}
 
 	return texture;

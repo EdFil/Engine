@@ -51,7 +51,7 @@ bool Engine::initialize() {
 	_textureManager->setRenderer(_renderer);
     _eventDispatcher->registerForApplicationEvents(this);
 
-	g_texture = _textureManager->loadTexture("ImageTest.png");
+	g_texture = _textureManager->loadTexture("AnotherImage.png");
 
 	return true;
 }
@@ -108,7 +108,7 @@ void Engine::mainLoop() {
 		SDL_SetRenderDrawColor(_renderer, 255, 0, 0, 255);
 		SDL_RenderDrawLine(_renderer, 0, 0, w, h);
 
-		SDL_Rect rect{ 0, 0, 200, 200 };
+		SDL_Rect rect{ 0, 0, 72, 72 };
 		if(g_texture != nullptr) {
 			SDL_RenderCopy(_renderer, g_texture, nullptr, &rect);
 		}
