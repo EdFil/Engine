@@ -14,7 +14,7 @@ add_library(stb_static INTERFACE)
 target_sources(stb_static INTERFACE ${SOURCES})
 
 # Include directotories
-target_include_directories(stb_static INTERFACE ${SOURCE_DIR})
+target_include_directories(stb_static SYSTEM INTERFACE ${SOURCE_DIR})
 
 
 

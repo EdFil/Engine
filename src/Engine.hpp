@@ -1,11 +1,8 @@
 #pragma once
 
 #include <memory>
-#include "ecs/EntitySystem.hpp"
-#include "ecs/TransformSystem.hpp"
-#include "ecs/RenderSystem.hpp"
+
 #include "EventDispatcher.hpp"
-#include "ecs/TextSystem.hpp"
 
 struct SDL_Window;
 struct SDL_Renderer;
@@ -21,12 +18,8 @@ public:
     void run();
     void setScene(std::unique_ptr<Scene>&& scene);
 
-    EntitySystem* entitySystem() { return &_entitySystem; }
-    TransformSystem* transformSystem() { return &_transformSystem; }
-    RenderSystem* renderSystem() { return &_renderSystem; }
     TextureManager* textureManager() { return _textureManager.get(); }
     EventDispatcher* eventDispatcher() { return _eventDispatcher.get(); }
-    TextSystem* textSystem() { return &_textSystem; }
 
 
     void onQuit() override;
@@ -37,10 +30,6 @@ private:
     void mainLoop();
 
 private:
-    EntitySystem _entitySystem;
-    TransformSystem _transformSystem;
-    RenderSystem _renderSystem;
-    TextSystem _textSystem;
     unsigned _lastGetTicksTime = 0;
 
     SDL_Window* _window = nullptr;
