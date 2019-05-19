@@ -3,10 +3,8 @@
 #include <algorithm>
 
 #include <SDL_events.h>
-#include "ecs/ECS.hpp"
 
 void EventDispatcher::initialize() {
-	_mouseEventDelegates.reserve(k_numMaxEntities);
 }
 
 

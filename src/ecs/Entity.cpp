@@ -1,36 +1,21 @@
-#include "Entity.hpp"
+//
+// Created by edgar on 5/18/19.
+//
 
 #include <algorithm>
 
-#include "Component.hpp"
-#include "EntitySystem.hpp"
+#include "Entity.h"
 
-void Entity::release() {
-	_system->releaseEntity(this);
+void Entity::addComponenthandle(GlobalHandle globalHandle) {
+    _componentHandles.push_back(globalHandle);
 }
 
-Component* Entity::getComponentWithType(ComponentType type) {
-	for (Component* component : _components) {
-		if (component->type == type) {
-			return component;
-		}
-	}
-
-	return nullptr;
-}
-
-void Entity::addComponent(Component* component) {
-	_components.push_back(component);
-	component->setEntity(this);
-}
-
-void Entity::removeComponent(Component* component) {
-	_components.erase(std::remove(_components.begin(), _components.end(), component), _components.end());
-	component->setEntity(this);
-}
-
-void Entity::cleanup() {
-	for(Component* component : _components) {
-		component->release();
-	}
+void Entity::removeComponentHandle(GlobalHandle globalHandle) {
+    for (size_t i = 0; i < _componentHandles.size(); i++) {
+        if (_componentHandles[i] == globalHandle) {
+            _componentHandles[i] = _componentHandles.back();
+            _componentHandles.pop_back();
+            return;
+        }
+    }
 }

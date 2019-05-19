@@ -65,7 +65,7 @@ file(GLOB_RECURSE SOURCES
     "${SOURCE_DIR}/*.hpp" "${SOURCE_DIR}/*.h")
 
 # Make library
-add_library(Engine_Static STATIC ${SOURCES} src/file/FileManager.cpp src/file/FileManager.hpp src/memory/Allocator.cpp src/memory/Allocator.h src/memory/Memory.cpp src/memory/Memory.h src/memory/SystemAllocator.cpp src/memory/SystemAllocator.h)
+add_library(Engine_Static STATIC ${SOURCES})
 
 # Include directotories
 target_include_directories(Engine_Static 

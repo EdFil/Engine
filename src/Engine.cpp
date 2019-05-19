@@ -43,10 +43,7 @@ bool Engine::initialize() {
 	_textureManager = std::make_unique<TextureManager>();
     _eventDispatcher = std::make_unique<EventDispatcher>();
 
-	_transformSystem.initialize();
-	_renderSystem.initialize();
     _eventDispatcher->initialize();
-	_textSystem.initialize(this);
 
 	_textureManager->setRenderer(_renderer);
     _eventDispatcher->registerForApplicationEvents(this);
@@ -112,8 +109,6 @@ void Engine::mainLoop() {
 		if(g_texture != nullptr) {
 			SDL_RenderCopy(_renderer, g_texture, nullptr, &rect);
 		}
-		
-        _renderSystem.draw(_renderer);
 
 		SDL_RenderPresent(_renderer);
 	}
