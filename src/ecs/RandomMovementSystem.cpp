@@ -49,7 +49,7 @@ GlobalHandle RandomMovementSystem::createComponent(GlobalHandle transformCompone
 	TransformComponent& transformComponent = _engine.transformSystem().get(transformComponentHandle);
 	transformComponent.position = Vector3(rand() % _resolutionX - 30, rand()	 % _resolutionY - 30, 0.0f);
 
-	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "[RandomMovementSystem::createComponent] Create component with Handle %d next is ", localHandleToReturn , _nextComponentHandle);
+	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "[RandomMovementSystem::createComponent] Create component with Handle %d next is %d", localHandleToReturn , _nextComponentHandle);
 
     return sprite_system_globals::k_spriteHandlePrefix | localHandleToReturn;
 }
@@ -91,7 +91,6 @@ void RandomMovementSystem::update(float delta) {
 	for (RandomMovementComponentWrapper& randomMovementComponentWrapper : _components) {
 		if (randomMovementComponentWrapper.status == ComponentStatus::Used) {
 			TransformComponent& transformComponent = _engine.transformSystem().get(randomMovementComponentWrapper.component.transformComponentHandle);
-			SpriteComponent& spriteComponent = _engine.spriteSystem().getComponent(randomMovementComponentWrapper.component.spriteComponentHandle);
 			RandomMovementComponent& randomMovementComponent = randomMovementComponentWrapper.component;
 
 			transformComponent.position.x += randomMovementComponent.direction.x * k_moveAmount * delta;

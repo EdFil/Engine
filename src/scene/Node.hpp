@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "ecs/ECS.h"
+#include "ecs/ECS.hpp"
 
 class Node {
 public:

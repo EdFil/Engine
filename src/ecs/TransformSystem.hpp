@@ -4,7 +4,7 @@
 
 #include "math/Vector3.h"
 
-#include "ECS.h"
+#include "ECS.hpp"
 
 struct TransformComponent {
 	Vector3 position;

@@ -26,6 +26,8 @@ endif()
 set(DEPENDENCIES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dependencies")
 set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies")
+
 # SDL Dependency
 set(SDL_SHARED ON CACHE BOOL "Build a shared version of the library")
 set(SDL_STATIC OFF CACHE BOOL "Build a static version of the library")

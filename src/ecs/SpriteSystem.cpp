@@ -45,7 +45,7 @@ GlobalHandle SpriteSystem::createComponent(GlobalHandle transformComponentHandle
 	_components[localHandleToReturn].component.texture = texture;
 	_components[localHandleToReturn].component.transformComponentHandle = transformComponentHandle;
 
-	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "[SpriteSystem::createComponent] Create component with Handle %d next is ", localHandleToReturn , _nextComponentHandle);
+	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "[SpriteSystem::createComponent] Create component with Handle %d next is %d", localHandleToReturn , _nextComponentHandle);
 
     return sprite_system_globals::k_spriteHandlePrefix | localHandleToReturn;
 }

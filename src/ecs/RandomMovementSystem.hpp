@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "ECS.h"
+#include "ECS.hpp"
 #include "math/Vector3.h"
 
 class Engine;

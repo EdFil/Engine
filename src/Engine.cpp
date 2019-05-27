@@ -31,7 +31,7 @@ bool Engine::initialize() {
 		return false;
 	}
 
-	_renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	_renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED);
 	if (_renderer == nullptr) {
 		SDL_DestroyWindow(_window);
 		SDL_LogError(SDL_LOG_CATEGORY_SYSTEM, "SDL_CreateRenderer Error: %s", SDL_GetError());
@@ -42,9 +42,9 @@ bool Engine::initialize() {
 	_textureManager = std::make_unique<TextureManager>();
     _eventDispatcher = std::make_unique<EventDispatcher>();
 
-	_transformSystem.initWithCapacity(10);
-	_spriteSystem.initWithCapacity(10);
-	_randomMovementSystem.initWithCapacity(10);
+	_transformSystem.initWithCapacity(10000);
+	_spriteSystem.initWithCapacity(10000);
+	_randomMovementSystem.initWithCapacity(10000);
 
     _eventDispatcher->initialize();
 
@@ -83,6 +83,7 @@ void Engine::setScene(std::unique_ptr<Scene>&& scene) {
 	}
 }
 
+static int i = 0;
 void Engine::mainLoop() {
 
 	while (_isRunning) {
@@ -100,6 +101,8 @@ void Engine::mainLoop() {
 		_spriteSystem.tempDraw(_renderer);
 
 		SDL_RenderPresent(_renderer);
+
+		SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "Frame number %d took %f seconds.", i++, delta);
 	}
 }
 

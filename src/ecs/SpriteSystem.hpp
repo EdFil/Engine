@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "ECS.h"
+#include "ECS.hpp"
 
 struct SDL_Renderer;
 struct SDL_Texture;

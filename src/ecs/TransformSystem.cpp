@@ -35,7 +35,7 @@ GlobalHandle TransformSystem::create(const Vector3& position) {
 
 	_components[localHandleToReturn].component.position = position;
 
-	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "[TransformSystem::createComponent] Create component with Handle %d next is ", localHandleToReturn , _nextComponentHandle);
+	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "[TransformSystem::createComponent] Create component with Handle %d next is %d", localHandleToReturn , _nextComponentHandle);
 
     return transform_system_globals::k_transformHandlePrefix | localHandleToReturn;
 }
