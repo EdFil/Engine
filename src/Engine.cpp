@@ -8,9 +8,8 @@
 #include "TextureManager.hpp"
 #include "scene/Scene.hpp"
 
-SDL_Texture* g_texture;
 
-Engine::Engine() { /* This need to be here because of the std::unique_ptr forward declarations */ }
+Engine::Engine() : _spriteSystem(*this) { /* This need to be here because of the std::unique_ptr forward declarations */ }
 
 bool Engine::initialize() {
 	srand(time(nullptr));
@@ -43,12 +42,12 @@ bool Engine::initialize() {
 	_textureManager = std::make_unique<TextureManager>();
     _eventDispatcher = std::make_unique<EventDispatcher>();
 
+	_transformSystem.initWithCapacity(10);
+	_spriteSystem.initWithCapacity(10);
     _eventDispatcher->initialize();
 
 	_textureManager->setRenderer(_renderer);
     _eventDispatcher->registerForApplicationEvents(this);
-
-	g_texture = _textureManager->loadTexture("AnotherImage.png");
 
 	return true;
 }
@@ -89,29 +88,14 @@ void Engine::mainLoop() {
 		float delta = static_cast<float>(currentTime - _lastGetTicksTime) / 1000.0f;
 		_lastGetTicksTime = currentTime;
 
-		if (_runningScene) {
-			_runningScene->update(delta);
-		}
 		_eventDispatcher->update();
 
-		if(_runningScene != nullptr) {
-			_runningScene->update(delta);
-		}
 
 		// Render Scene
 		SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
 		SDL_RenderClear(_renderer);
 
-		//int w, h;
-		//SDL_GetWindowSize(_window, &w, &h);
-
-		//SDL_SetRenderDrawColor(_renderer, 255, 0, 0, 255);
-		//SDL_RenderDrawLine(_renderer, 0, 0, w, h);
-
-		//SDL_Rect rect{ 0, 0, 72, 72 };
-		//if(g_texture != nullptr) {
-		//	SDL_RenderCopy(_renderer, g_texture, nullptr, &rect);
-		//}
+		_spriteSystem.tempDraw(_renderer);
 
 		SDL_RenderPresent(_renderer);
 	}

@@ -4,15 +4,13 @@
 
 class Engine;
 
-class Scene : public Node {
+class Scene {
 public:
 	virtual ~Scene() = default;
 
 	void attachEngine(Engine* engine) { _engine = engine; }
-	virtual void onCreated() = 0;
-	virtual void onDestroy() = 0;
-
-	void update(float) override;
+	virtual void onCreated() {}
+	virtual void onDestroy() {}
 
 protected:
 	Engine* _engine = nullptr;

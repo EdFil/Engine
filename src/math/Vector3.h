@@ -157,5 +157,4 @@ public:
 
         return *this;
     }
-
 };

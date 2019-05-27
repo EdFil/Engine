@@ -1,15 +1,12 @@
-//
-// Created by edgar on 3/8/19.
-//
+#include "TransformSystem.hpp"
 
-#include "TransformSystem.h"
-
-#include <iostream>
 #include <cassert>
+
+#include <SDL_log.h>
 
 void TransformSystem::initWithCapacity(int16_t capacity) {
     if (capacity <= 0) {
-        std::cout << "[TransformSystem::initWithCapacity] Error: Capacity can not be <= 0" << std::endl;
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "[TransformSystem::initWithCapacity] Capacity can not be <= 0");
     }
     _nextComponentHandle = 0;
     _components.resize(capacity);
@@ -20,37 +17,38 @@ void TransformSystem::initWithCapacity(int16_t capacity) {
     }
 }
 
-GlobalHandle TransformSystem::createComponent() {
-    if (_nextComponentHandle >= static_cast<LocalHandle>(_components.size())) {
-        std::cout << "[TransformSystem::createComponent] Error: Component vector full. Resize not implemented yet" << std::endl;
-        return -1;
-    }
+GlobalHandle TransformSystem::create() {
+	return create(Vector3());
+}
 
-    if (_nextComponentHandle < 0) {
-        std::cout << "[TransformSystem::createComponent] Error: No more space for components" << std::endl;
+GlobalHandle TransformSystem::create(const Vector3& position) {
+    if (_nextComponentHandle >= static_cast<LocalHandle>(_components.size())) {
+		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "[TransformSystem::createComponent] Component vector full. Resize not implemented yet");
         return -1;
     }
 
     assert(_components[_nextComponentHandle].status == ComponentStatus::Free);
 
-    LocalHandle localHandleToReturn = _nextComponentHandle;
+	const LocalHandle localHandleToReturn = _nextComponentHandle;
     _nextComponentHandle = _components[localHandleToReturn].nextComponentHandle;
     _components[localHandleToReturn].status = ComponentStatus::Used;
 
-    std::cout << "Create component on Handle " << localHandleToReturn << " next is " << _nextComponentHandle << std::endl;
+	_components[localHandleToReturn].component.position = position;
+
+	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "[TransformSystem::createComponent] Create component with Handle %d next is ", localHandleToReturn , _nextComponentHandle);
 
     return transform_system_globals::k_transformHandlePrefix | localHandleToReturn;
 }
 
-void TransformSystem::destroyComponent(const GlobalHandle globalHandle) {
-    if (_nextComponentHandle > static_cast<LocalHandle>(_components.size()) || _nextComponentHandle < 0) {
-        std::cout << "[TransformSystem::destroyComponent] Error: Invalid component handle" << std::endl;
+void TransformSystem::destroy(const GlobalHandle globalHandle) {
+    if (_nextComponentHandle > static_cast<LocalHandle>(_components.size())) {
+		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "[TransformSystem::destroyComponent] Invalid component handle %d", globalHandle);
         return;
     }
 
     const LocalHandle localHandle = static_cast<LocalHandle>(globalHandle);
     if (_components[localHandle].status == ComponentStatus::Free) {
-        std::cout << "[TransformSystem::destroyComponent] Warning: Component was already Free" << std::endl;
+		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "[TransformSystem::destroyComponent] Component %d was already Free", globalHandle);
         return;
     }
 
@@ -58,14 +56,15 @@ void TransformSystem::destroyComponent(const GlobalHandle globalHandle) {
     _components[localHandle].nextComponentHandle = _nextComponentHandle;
     _nextComponentHandle = static_cast<LocalHandle>(localHandle);
 
-    std::cout << "Delete component on Handle " << localHandle << " next is " << _nextComponentHandle << std::endl;
+	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "[TransformSystem::destroyComponent] Delete component on Handle %d next is %d", localHandle, _nextComponentHandle);
 }
 
-TransformComponent& TransformSystem::getComponent(const GlobalHandle globalHandle) {
-    if (globalHandle > static_cast<LocalHandle >(_components.size()) || globalHandle < 0) {
-        std::cout << "[TransformSystem::getComponent] Error: Invalid handle" << std::endl;
+TransformComponent& TransformSystem::get(const GlobalHandle globalHandle) {
+	const LocalHandle localHandle = static_cast<LocalHandle>(globalHandle);
+	if (localHandle > static_cast<LocalHandle >(_components.size())) {
+		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "[TransformSystem::getComponent] Invalid handle %d", localHandle);
         return transform_system_globals::g_invalidTransformComponent;
     }
 
-    return _components[static_cast<LocalHandle>(globalHandle)].component;
+    return _components[localHandle].component;
 }

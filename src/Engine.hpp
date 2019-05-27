@@ -2,6 +2,8 @@
 
 #include <memory>
 
+#include "ecs/TransformSystem.hpp"
+#include "ecs/SpriteSystem.hpp"
 #include "EventDispatcher.hpp"
 
 struct SDL_Window;
@@ -18,6 +20,8 @@ public:
     void run();
     void setScene(std::unique_ptr<Scene>&& scene);
 
+	TransformSystem& transformSystem() { return _transformSystem; }
+	SpriteSystem& spriteSystem() { return _spriteSystem; }
     TextureManager* textureManager() { return _textureManager.get(); }
     EventDispatcher* eventDispatcher() { return _eventDispatcher.get(); }
 
@@ -38,6 +42,9 @@ private:
     std::unique_ptr<Scene> _runningScene;
     std::unique_ptr<TextureManager> _textureManager;
     std::unique_ptr<EventDispatcher> _eventDispatcher;
+
+	TransformSystem _transformSystem;
+	SpriteSystem _spriteSystem;
 
     bool _isRunning = false;
 };
