@@ -4,6 +4,7 @@
 
 #include "ecs/TransformSystem.hpp"
 #include "ecs/SpriteSystem.hpp"
+#include "ecs/RandomMovementSystem.hpp"
 #include "EventDispatcher.hpp"
 
 struct SDL_Window;
@@ -22,6 +23,7 @@ public:
 
 	TransformSystem& transformSystem() { return _transformSystem; }
 	SpriteSystem& spriteSystem() { return _spriteSystem; }
+	RandomMovementSystem& randomMovementSystem() { return _randomMovementSystem; }
     TextureManager* textureManager() { return _textureManager.get(); }
     EventDispatcher* eventDispatcher() { return _eventDispatcher.get(); }
 
@@ -45,6 +47,7 @@ private:
 
 	TransformSystem _transformSystem;
 	SpriteSystem _spriteSystem;
+	RandomMovementSystem _randomMovementSystem;
 
     bool _isRunning = false;
 };

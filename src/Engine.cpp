@@ -9,7 +9,7 @@
 #include "scene/Scene.hpp"
 
 
-Engine::Engine() : _spriteSystem(*this) { /* This need to be here because of the std::unique_ptr forward declarations */ }
+Engine::Engine() : _spriteSystem(*this), _randomMovementSystem(*this) {}
 
 bool Engine::initialize() {
 	srand(time(nullptr));
@@ -44,6 +44,8 @@ bool Engine::initialize() {
 
 	_transformSystem.initWithCapacity(10);
 	_spriteSystem.initWithCapacity(10);
+	_randomMovementSystem.initWithCapacity(10);
+
     _eventDispatcher->initialize();
 
 	_textureManager->setRenderer(_renderer);
@@ -88,8 +90,8 @@ void Engine::mainLoop() {
 		float delta = static_cast<float>(currentTime - _lastGetTicksTime) / 1000.0f;
 		_lastGetTicksTime = currentTime;
 
+		_randomMovementSystem.update(delta);
 		_eventDispatcher->update();
-
 
 		// Render Scene
 		SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);

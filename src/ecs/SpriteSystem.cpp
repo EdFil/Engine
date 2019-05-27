@@ -73,12 +73,14 @@ void SpriteSystem::destroyComponent(const GlobalHandle globalHandle) {
 }
 
 SpriteComponent& SpriteSystem::getComponent(const GlobalHandle globalHandle) {
-    if (globalHandle > static_cast<LocalHandle >(_components.size())) {
+	const LocalHandle localHandle = static_cast<LocalHandle>(globalHandle);
+	
+	if (localHandle > static_cast<LocalHandle >(_components.size())) {
 		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "[SpriteSystem::getComponent] Invalid handle %d", globalHandle);
         return sprite_system_globals::g_invalidSpriteComponent;
     }
 
-    return _components[static_cast<LocalHandle>(globalHandle)].component;
+    return _components[localHandle].component;
 }
 
 void SpriteSystem::tempDraw(SDL_Renderer* renderer) {
