@@ -2,14 +2,14 @@
 
 #include <memory>
 
-#include "ecs/TransformSystem.hpp"
-#include "ecs/SpriteSystem.hpp"
-#include "ecs/RandomMovementSystem.hpp"
+//#include "ecs/TransformSystem.hpp"
+//#include "ecs/SpriteSystem.hpp"
+//#include "ecs/RandomMovementSystem.hpp"
+#include "ecs/EntityManager.hpp"
 #include "EventDispatcher.hpp"
 
 struct SDL_Window;
 struct SDL_Renderer;
-class Scene;
 class TextureManager;
 
 class Engine : public ApplicationEventDelegate {
@@ -19,11 +19,12 @@ public:
     bool initialize();
     void cleanup();
     void run();
-    void setScene(std::unique_ptr<Scene>&& scene);
+//    void setScene(std::unique_ptr<Scene>&& scene);
 
-	TransformSystem& transformSystem() { return _transformSystem; }
-	SpriteSystem& spriteSystem() { return _spriteSystem; }
-	RandomMovementSystem& randomMovementSystem() { return _randomMovementSystem; }
+//	TransformSystem& transformSystem() { return _transformSystem; }
+//	SpriteSystem& spriteSystem() { return _spriteSystem; }
+//	RandomMovementSystem& randomMovementSystem() { return _randomMovementSystem; }
+    EntityManager& entityManager() { return _entityManager; };
     TextureManager* textureManager() { return _textureManager.get(); }
     EventDispatcher* eventDispatcher() { return _eventDispatcher.get(); }
 
@@ -41,13 +42,14 @@ private:
     SDL_Window* _window = nullptr;
     SDL_Renderer* _renderer = nullptr;
 
-    std::unique_ptr<Scene> _runningScene;
+//    std::unique_ptr<Scene> _runningScene;
     std::unique_ptr<TextureManager> _textureManager;
     std::unique_ptr<EventDispatcher> _eventDispatcher;
 
-	TransformSystem _transformSystem;
-	SpriteSystem _spriteSystem;
-	RandomMovementSystem _randomMovementSystem;
+    EntityManager _entityManager;
+//	TransformSystem _transformSystem;
+//	SpriteSystem _spriteSystem;
+//	RandomMovementSystem _randomMovementSystem;
 
     bool _isRunning = false;
 };

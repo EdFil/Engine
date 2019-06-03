@@ -6,10 +6,9 @@
 #include <SDL.h>
 
 #include "TextureManager.hpp"
-#include "scene/Scene.hpp"
 
 
-Engine::Engine() : _spriteSystem(*this), _randomMovementSystem(*this) {}
+Engine::Engine() {}// : _spriteSystem(*this), _randomMovementSystem(*this) {}
 
 bool Engine::initialize() {
 	srand(time(nullptr));
@@ -42,9 +41,10 @@ bool Engine::initialize() {
 	_textureManager = std::make_unique<TextureManager>();
     _eventDispatcher = std::make_unique<EventDispatcher>();
 
-	_transformSystem.initWithCapacity(10000);
-	_spriteSystem.initWithCapacity(10000);
-	_randomMovementSystem.initWithCapacity(10000);
+    _entityManager.initWithCapacity(3);
+//	_transformSystem.initWithCapacity(10000);
+//	_spriteSystem.initWithCapacity(10000);
+//	_randomMovementSystem.initWithCapacity(10000);
 
     _eventDispatcher->initialize();
 
@@ -70,18 +70,18 @@ void Engine::run() {
 	mainLoop();
 }
 
-void Engine::setScene(std::unique_ptr<Scene>&& scene) {
-	if(_runningScene != nullptr) {
-		_runningScene->onDestroy();
-	}
-
-	_runningScene = std::move(scene);
-
-	if(_runningScene != nullptr) {
-		_runningScene->attachEngine(this);
-		_runningScene->onCreated();
-	}
-}
+//void Engine::setScene(std::unique_ptr<Scene>&& scene) {
+//	if(_runningScene != nullptr) {
+//		_runningScene->onDestroy();
+//	}
+//
+//	_runningScene = std::move(scene);
+//
+//	if(_runningScene != nullptr) {
+//		_runningScene->attachEngine(this);
+//		_runningScene->onCreated();
+//	}
+//}
 
 static int i = 0;
 void Engine::mainLoop() {
@@ -91,14 +91,14 @@ void Engine::mainLoop() {
 		float delta = static_cast<float>(currentTime - _lastGetTicksTime) / 1000.0f;
 		_lastGetTicksTime = currentTime;
 
-		_randomMovementSystem.update(delta);
+//		_randomMovementSystem.update(delta);
 		_eventDispatcher->update();
 
 		// Render Scene
 		SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
 		SDL_RenderClear(_renderer);
 
-		_spriteSystem.tempDraw(_renderer);
+//		_spriteSystem.tempDraw(_renderer);
 
 		SDL_RenderPresent(_renderer);
 

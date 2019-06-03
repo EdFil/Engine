@@ -4,29 +4,27 @@
 
 #include <vector>
 
-struct Entity {
-    uint32_t id;
-};
+#include "container/ObjectPool.hpp"
 
-struct EntityWrapper {
-    Entity entity;
-    LocalHandle nextEntityHandle;
-    ComponentStatus status;
+namespace entity_system_globals {
+    static const SystemIndex k_entitySystemIndex = 1 << (32 - k_numBitsIndex);
+}
+
+struct Entity {
+    GlobalHandle handle;
 };
 
 class EntityManager {
 public:
-    std::vector<EntityWrapper> _entities;
-    LocalHandle _nextComponentHandle;
+    ObjectPool<Entity> _entities;
 
     EntityManager() = default;
-    EntityManager(const TransformSystem&& rhs) = delete;
-    EntityManager(TransformSystem&& rhs) = delete;
+    EntityManager(const EntityManager&& rhs) = delete;
+    EntityManager(EntityManager&& rhs) = delete;
     EntityManager& operator=(const EntityManager& rhs) = delete;
     EntityManager& operator=(const EntityManager&& rhs) = delete;
 
-    void initWithCapacity(int16_t capacity);
-    GlobalHandle create();
-    void destroy(GlobalHandle globalHandle);
-    Entity* get(GlobalHandle globalHandle);
+    bool initWithCapacity(uint32_t capacity);
+    GlobalHandle createEntity();
+    void releaseEntity(const GlobalHandle handle);
 };
