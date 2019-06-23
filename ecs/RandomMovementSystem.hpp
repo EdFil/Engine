@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "ECS.hpp"
-#include "math/Vector3.h"
+#include "math/Vector3f.hpp"
 
 class Engine;
 

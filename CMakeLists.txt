@@ -65,6 +65,12 @@ target_link_libraries(Engine_Static
 		stb_static # stb
 )
 
+if(${CMAKE_BUILD_TYPE} STREQUAL "Release")
+	target_compile_definitions(Engine_Static PUBLIC RELEASE)
+else()
+	target_compile_definitions(Engine_Static PUBLIC DEBUG)
+endif()
+
 # Source group generation for IDEs
 foreach(SOURCE IN ITEMS ${SOURCES})
     get_filename_component(SOURCE_PATH "${SOURCE}" PATH)

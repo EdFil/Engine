@@ -6,6 +6,8 @@
 class RenderComponent;
 
 struct ApplicationEventDelegate {
+    virtual ~ApplicationEventDelegate() = default;
+
     virtual void onQuit() = 0;
 };
 

@@ -5,10 +5,12 @@
 
 #include <SDL.h>
 
+#include "Scene.hpp"
 #include "TextureManager.hpp"
 
 
 Engine::Engine() {}// : _spriteSystem(*this), _randomMovementSystem(*this) {}
+Engine::~Engine() {}
 
 bool Engine::initialize() {
 	srand(time(nullptr));
@@ -41,7 +43,7 @@ bool Engine::initialize() {
 	_textureManager = std::make_unique<TextureManager>();
     _eventDispatcher = std::make_unique<EventDispatcher>();
 
-    _entityManager.initWithCapacity(3);
+//  _entityManager.initWithCapacity(3);
 //	_transformSystem.initWithCapacity(10000);
 //	_spriteSystem.initWithCapacity(10000);
 //	_randomMovementSystem.initWithCapacity(10000);
@@ -70,20 +72,19 @@ void Engine::run() {
 	mainLoop();
 }
 
-//void Engine::setScene(std::unique_ptr<Scene>&& scene) {
-//	if(_runningScene != nullptr) {
-//		_runningScene->onDestroy();
-//	}
-//
-//	_runningScene = std::move(scene);
-//
-//	if(_runningScene != nullptr) {
-//		_runningScene->attachEngine(this);
-//		_runningScene->onCreated();
-//	}
-//}
+void Engine::setScene(std::unique_ptr<Scene>&& scene) {
+	if(_runningScene != nullptr) {
+		_runningScene->onDestroy();
+	}
 
-static int i = 0;
+	_runningScene = std::move(scene);
+
+	if(_runningScene != nullptr) {
+		_runningScene->attachEngine(this);
+		_runningScene->onCreated();
+	}
+}
+
 void Engine::mainLoop() {
 
 	while (_isRunning) {
@@ -91,8 +92,13 @@ void Engine::mainLoop() {
 		float delta = static_cast<float>(currentTime - _lastGetTicksTime) / 1000.0f;
 		_lastGetTicksTime = currentTime;
 
+        _eventDispatcher->update();
+
+		if (_runningScene) {
+		    _runningScene->update(delta);
+		}
+
 //		_randomMovementSystem.update(delta);
-		_eventDispatcher->update();
 
 		// Render Scene
 		SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
@@ -101,11 +107,13 @@ void Engine::mainLoop() {
 //		_spriteSystem.tempDraw(_renderer);
 
 		SDL_RenderPresent(_renderer);
-
-		SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "Frame number %d took %f seconds.", i++, delta);
 	}
 }
 
 void Engine::onQuit() {
+    shutdown();
+}
+
+void Engine::shutdown() {
     _isRunning = false;
 }
